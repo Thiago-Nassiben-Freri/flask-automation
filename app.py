@@ -12,12 +12,31 @@ def get_connection():
         database="logs_test"
     )
 
+def create_table():
+    conn = get_connection()
+    cursor = conn.cursor() 
+
+    sql = """
+            CREATE TABLE IF NOT EXISTS users (
+                user_name VARCHAR(100),
+                password VARCHAR(100)
+            );
+        """
+
+    cursor.execute(sql)
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
 @app.route("/")
 def index(): 
     return render_template("index.html")
 
 @app.route("/register", methods=["POST"])
 def register():
+
     data = request.get_json()
 
     username = data.get("username")
@@ -28,11 +47,6 @@ def register():
 
     try: 
         sql = """
-            CREATE TABLE IF NOT EXISTS users (
-                user_name VARCHAR(100),
-                password VARCHAR(100)
-            );
-        
             INSERT INTO users
             (user_name, password)
             VALUES(%s, %s)
@@ -54,4 +68,5 @@ def register():
         conn.close()
 
 if __name__ == "__main__":
+    create_table()
     app.run(debug=True)
