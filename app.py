@@ -28,6 +28,11 @@ def register():
 
     try: 
         sql = """
+            CREATE TABLE IF NOT EXISTS users (
+                user_name VARCHAR(100),
+                password VARCHAR(100)
+            );
+        
             INSERT INTO users
             (user_name, password)
             VALUES(%s, %s)
